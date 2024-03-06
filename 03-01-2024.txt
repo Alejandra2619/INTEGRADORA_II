@@ -1,0 +1,54 @@
+*Paso 1: 
+ Abrir el archivo .env y cambiar
+ DB_CONNECTION=mysql 
+ por DB_CONNECTION=mongodb
+
+*Paso 2: 
+ Abrir la ruta config/database.php
+ Y cambiar:
+ 'default' => env('DB_CONNECTION', 'mongodb'),
+
+*Paso 3: 
+ Abrir la ruta config/app.php y cambiar:
+ Jenssegers\Mongodb\MongodbServiceProvider::class,
+
+*Paso 4: 
+ Crear un modelo php artisan make:model NombreModelo -a
+ Abrir la ruta app/Models/NombreModelo.php
+ y escribir:
+ use Jenssegers\Mongodb\Eloquent\Model;
+ Y comentamos la linea:
+ //use Illuminate\Database\Eloquent\Model;
+
+*Paso 5: 
+ Escribimos debajo de use HasFactory;
+ protected $connection = 'mongodb';
+ protected $collection = 'products_collection';
+
+*Paso 6: 
+ En la migración del modelo cambiar de:
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+        });
+ Por: 
+        Schema::create('products_collection', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+        });
+
+*Paso 7:
+ Crear un usuario en MongoAtlas y en 
+ el archivo database.php añadir:
+  'mongodb'=>[
+            'driver' => 'mongodb',
+            'dsn' => env('urlGenerada'),
+            'database' => 'Prueba'
+        ]
+
+*Paso 8:
+ Hacer una migración:
+ php artisan migrate:fresh
+ Si algo sale mal en el fresh va a estar mal la 
+ url de conexión
+ 
